@@ -1,5 +1,6 @@
 import 'package:chedro/screens/auth/login_screen.dart';
 import 'package:chedro/screens/home_screen.dart';
+import 'package:chedro/screens/tabs/add_user_tab.dart';
 import 'package:chedro/screens/tabs/dashboard_tab.dart';
 import 'package:chedro/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class _MyDrawerState extends State<DrawerWidget> {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const HomeScreen()));
+                    builder: (context) => const AddUserTab()));
               },
             ),
             ListTile(
