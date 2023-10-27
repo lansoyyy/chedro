@@ -1,3 +1,4 @@
+import 'package:chedro/screens/home_screen.dart';
 import 'package:chedro/widgets/button_widget.dart';
 import 'package:chedro/widgets/text_widget.dart';
 import 'package:chedro/widgets/textfield_widget.dart';
@@ -119,7 +120,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ButtonWidget(
                           radius: 100,
                           label: 'Login',
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => const HomeScreen()));
+                          },
                         ),
                       ],
                     ),
