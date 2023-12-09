@@ -1,3 +1,4 @@
+import 'package:chedro/screens/home_screen.dart';
 import 'package:chedro/screens/users/users_home_screen.dart';
 import 'package:chedro/widgets/button_widget.dart';
 import 'package:chedro/widgets/text_widget.dart';
@@ -121,9 +122,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           radius: 100,
                           label: 'Login',
                           onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => const UsersHomeScreen()));
+                            if (emailController.text == 'admin-email' &&
+                                passwordController.text == 'admin-password') {
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const HomeScreen()));
+                            } else {
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const UsersHomeScreen()));
+                            }
                           },
                         ),
                       ],
