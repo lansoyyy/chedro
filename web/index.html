@@ -15,7 +15,7 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
-  <!-- <base href="https://lansoyyy.github.io/chedro_v2/"> -->
+  <!-- <base href="https://gangelo12319.github.io/chedro/"> -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
@@ -57,6 +57,25 @@
         }
       });
     });
+  </script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAYcs7EynvpHBhTrZ5xOB3_WqO0eyoYnnA",
+      authDomain: "chedro-1e773.firebaseapp.com",
+      projectId: "chedro-1e773",
+      storageBucket: "chedro-1e773.appspot.com",
+      messagingSenderId: "322630743242",
+      appId: "1:322630743242:web:9062aa64a6471b4e457033"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
   </script>
 </body>
 
