@@ -1,6 +1,9 @@
+import 'package:chedro/services/add_user.dart';
 import 'package:chedro/widgets/button_widget.dart';
 import 'package:chedro/widgets/drawer_widget.dart';
 import 'package:chedro/widgets/textfield_widget.dart';
+import 'package:chedro/widgets/toast_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/text_widget.dart';
@@ -162,7 +165,21 @@ class _AddUserTabState extends State<AddUserTab> {
               Center(
                 child: ButtonWidget(
                   label: 'Add User',
-                  onPressed: () {},
+                  onPressed: () async {
+                    UserCredential userCredential = await FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                            email: emailController.text,
+                            password: passwordController.text);
+                    addUser(
+                        firstnameController.text,
+                        lastnameController.text,
+                        selected,
+                        emailController.text,
+                        userCredential.user?.uid);
+
+                    showToast('User added succesfully!');
+                    Navigator.pop(context);
+                  },
                 ),
               ),
             ],
