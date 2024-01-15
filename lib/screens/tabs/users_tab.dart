@@ -1,4 +1,7 @@
 import 'package:chedro/widgets/drawer_widget.dart';
+import 'package:chedro/widgets/toast_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/text_widget.dart';
@@ -114,85 +117,120 @@ class _UsersTabState extends State<UsersTab> {
               const SizedBox(
                 height: 20,
               ),
-              Container(
-                width: double.infinity,
-                height: 500,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                ),
-                child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: SingleChildScrollView(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: DataTable(columns: [
-                          DataColumn(
-                            label: TextWidget(
-                              text: 'Number',
-                              fontSize: 13,
-                              fontFamily: 'Bold',
-                            ),
-                          ),
-                          DataColumn(
-                            label: TextWidget(
-                                text: 'Name', fontSize: 13, fontFamily: 'Bold'),
-                          ),
-                          DataColumn(
-                            label: TextWidget(
-                                text: 'Email',
-                                fontSize: 13,
-                                fontFamily: 'Bold'),
-                          ),
-                          DataColumn(
-                            label: TextWidget(
-                                text: 'Role', fontSize: 13, fontFamily: 'Bold'),
-                          ),
-                          DataColumn(
-                            label: TextWidget(
-                              text: '',
-                              fontSize: 13,
-                            ),
-                          ),
-                        ], rows: [
-                          for (int i = 0; i < 50; i++)
-                            DataRow(cells: [
-                              DataCell(
-                                TextWidget(
-                                  text: i.toString(),
-                                  fontSize: 11,
-                                ),
-                              ),
-                              DataCell(
-                                TextWidget(
-                                  text: 'John Doe',
-                                  fontSize: 11,
-                                ),
-                              ),
-                              DataCell(
-                                TextWidget(
-                                  text: 'doe123565@gmail.com',
-                                  fontSize: 11,
-                                ),
-                              ),
-                              DataCell(
-                                TextWidget(
-                                  text: 'Administrator',
-                                  fontSize: 11,
-                                ),
-                              ),
-                              DataCell(IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  Icons.delete,
-                                  size: 25,
-                                ),
-                              )),
-                            ])
-                        ]),
+              StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('Users')
+                      .where('role', isEqualTo: selected)
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      print(snapshot.error);
+                      return const Center(child: Text('Error'));
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 50),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          color: Colors.black,
+                        )),
+                      );
+                    }
+
+                    final data = snapshot.requireData;
+                    return Container(
+                      width: double.infinity,
+                      height: 500,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
                       ),
-                    )),
-              ),
+                      child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: SingleChildScrollView(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: DataTable(columns: [
+                                DataColumn(
+                                  label: TextWidget(
+                                    text: 'Number',
+                                    fontSize: 13,
+                                    fontFamily: 'Bold',
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: TextWidget(
+                                      text: 'Name',
+                                      fontSize: 13,
+                                      fontFamily: 'Bold'),
+                                ),
+                                DataColumn(
+                                  label: TextWidget(
+                                      text: 'Email',
+                                      fontSize: 13,
+                                      fontFamily: 'Bold'),
+                                ),
+                                DataColumn(
+                                  label: TextWidget(
+                                      text: 'Role',
+                                      fontSize: 13,
+                                      fontFamily: 'Bold'),
+                                ),
+                                DataColumn(
+                                  label: TextWidget(
+                                    text: '',
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ], rows: [
+                                for (int i = 0; i < data.docs.length; i++)
+                                  DataRow(cells: [
+                                    DataCell(
+                                      TextWidget(
+                                        text: '${i + 1}',
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                    DataCell(
+                                      TextWidget(
+                                        text: data.docs[i]['fname'] +
+                                            ' ' +
+                                            data.docs[i]['lname'],
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                    DataCell(
+                                      TextWidget(
+                                        text: data.docs[i]['email'],
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                    DataCell(
+                                      TextWidget(
+                                        text: data.docs[i]['role'],
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                    DataCell(IconButton(
+                                      onPressed: () async {
+                                        await FirebaseFirestore.instance
+                                            .collection('Users')
+                                            .doc(data.docs[i].id)
+                                            .delete();
+                                        showToast('User deleted succesfully!');
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        size: 25,
+                                      ),
+                                    )),
+                                  ])
+                              ]),
+                            ),
+                          )),
+                    );
+                  }),
             ],
           ),
         ),
