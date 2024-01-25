@@ -20,6 +20,8 @@ class _UsersHomeScreenState extends State<UsersHomeScreen> {
     return Scaffold(
       drawer: const UserDrawerWidget(),
       appBar: AppBar(
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -43,6 +45,7 @@ class _UsersHomeScreenState extends State<UsersHomeScreen> {
             onPressed: () {},
             icon: const Icon(
               Icons.notifications_rounded,
+              color: Colors.white,
             ),
           ),
           const SizedBox(
@@ -50,6 +53,7 @@ class _UsersHomeScreenState extends State<UsersHomeScreen> {
           ),
           const Icon(
             Icons.account_circle,
+            color: Colors.white,
             size: 25,
           ),
           const SizedBox(

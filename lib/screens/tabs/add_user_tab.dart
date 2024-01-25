@@ -166,19 +166,26 @@ class _AddUserTabState extends State<AddUserTab> {
                 child: ButtonWidget(
                   label: 'Add User',
                   onPressed: () async {
-                    UserCredential userCredential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: emailController.text,
-                            password: passwordController.text);
-                    addUser(
+                    try {
+                      var userCredential = await FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                        email: emailController.text,
+                        password: passwordController.text,
+                      );
+
+                      addUser(
                         firstnameController.text,
                         lastnameController.text,
                         selected,
                         emailController.text,
-                        userCredential.user?.uid);
+                        userCredential.user?.uid ?? "",
+                      );
 
-                    showToast('User added succesfully!');
-                    Navigator.pop(context);
+                      showToast('User added succesfully!');
+                      Navigator.pop(context);
+                    } catch (e) {
+                      showToast(e.toString());
+                    }
                   },
                 ),
               ),
