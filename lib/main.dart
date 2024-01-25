@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'CHEDRO',
-      home: UsersHomeScreen(),
+      home: LoginScreen(),
     );
   }
 }
