@@ -4,7 +4,9 @@ import 'package:chedro/widgets/text_widget.dart';
 import 'package:chedro/widgets/textfield_widget.dart';
 import 'package:chedro/widgets/toast_widget.dart';
 import 'package:chedro/widgets/user_drawer_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -973,60 +975,183 @@ class _UsersHomeScreenState extends State<UsersHomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 300,
-                    height: 250,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: TextWidget(
-                        text: 'Active S.O',
-                        fontSize: 32,
-                        color: Colors.white,
-                        fontFamily: 'Bold',
-                      ),
-                    ),
-                  ),
+                  StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('SO')
+                          .where('userId',
+                              isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                          .where('status', isEqualTo: 'Active')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          print('error');
+                          return const Center(child: Text('Error'));
+                        }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 50),
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.black,
+                            )),
+                          );
+                        }
+
+                        final data = snapshot.requireData;
+                        return Container(
+                          width: 300,
+                          height: 250,
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextWidget(
+                                  text: data.docs.length.toString(),
+                                  fontSize: 42,
+                                  color: Colors.white,
+                                  fontFamily: 'Bold',
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextWidget(
+                                  text: 'Active S.O',
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontFamily: 'Bold',
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
                   const SizedBox(
                     width: 50,
                   ),
-                  Container(
-                    width: 300,
-                    height: 250,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: TextWidget(
-                        text: 'Accepted S.O',
-                        fontSize: 32,
-                        color: Colors.white,
-                        fontFamily: 'Bold',
-                      ),
-                    ),
-                  ),
+                  StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('SO')
+                          .where('userId',
+                              isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                          .where('status', isEqualTo: 'Accepted')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          print('error');
+                          return const Center(child: Text('Error'));
+                        }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 50),
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.black,
+                            )),
+                          );
+                        }
+
+                        final data = snapshot.requireData;
+                        return Container(
+                          width: 300,
+                          height: 250,
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextWidget(
+                                  text: data.docs.length.toString(),
+                                  fontSize: 42,
+                                  color: Colors.white,
+                                  fontFamily: 'Bold',
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextWidget(
+                                  text: 'Accepted S.O',
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontFamily: 'Bold',
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
                   const SizedBox(
                     width: 50,
                   ),
-                  Container(
-                    width: 300,
-                    height: 250,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: TextWidget(
-                        text: 'Disapproved S.O',
-                        fontSize: 32,
-                        color: Colors.white,
-                        fontFamily: 'Bold',
-                      ),
-                    ),
-                  ),
+                  StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('SO')
+                          .where('userId',
+                              isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                          .where('status', isEqualTo: 'Rejected')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          print('error');
+                          return const Center(child: Text('Error'));
+                        }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 50),
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.black,
+                            )),
+                          );
+                        }
+
+                        final data = snapshot.requireData;
+                        return Container(
+                          width: 300,
+                          height: 250,
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextWidget(
+                                  text: data.docs.length.toString(),
+                                  fontSize: 42,
+                                  color: Colors.white,
+                                  fontFamily: 'Bold',
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextWidget(
+                                  text: 'Rejected S.O',
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontFamily: 'Bold',
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
                 ],
               ),
               const SizedBox(
@@ -1094,7 +1219,10 @@ class _UsersHomeScreenState extends State<UsersHomeScreen> {
                     minWidth: 150,
                     height: 45,
                     color: Colors.blue,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const UsersHomeScreen()));
+                    },
                     child: Row(
                       children: [
                         TextWidget(
@@ -1117,111 +1245,234 @@ class _UsersHomeScreenState extends State<UsersHomeScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  for (int i = 0; i < 3; i++)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25, right: 25),
-                      child: Card(
-                        child: Container(
-                          width: 300,
-                          height: 250,
-                          decoration: BoxDecoration(
-                            color: Colors.blue[900],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        TextWidget(
-                                          text: 'Special Order',
-                                          fontSize: 14,
-                                          fontFamily: 'Bold',
-                                          color: Colors.white,
+              StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('SO')
+                      .where('userId',
+                          isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      print('error');
+                      return const Center(child: Text('Error'));
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 50),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          color: Colors.black,
+                        )),
+                      );
+                    }
+
+                    final data = snapshot.requireData;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        for (int i = 0; i < data.docs.length; i++)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25, right: 25),
+                            child: Card(
+                              child: Container(
+                                width: 300,
+                                height: 250,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue[900],
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              TextWidget(
+                                                text: 'Special Order',
+                                                fontSize: 14,
+                                                fontFamily: 'Bold',
+                                                color: Colors.white,
+                                              ),
+                                              TextWidget(
+                                                text:
+                                                    '${data.docs[i]['day']}-${data.docs[i]['month']}-${data.docs[i]['year']}',
+                                                fontSize: 14,
+                                                color: Colors.white,
+                                              ),
+                                            ],
+                                          ),
+                                          const Icon(
+                                            Icons.file_copy_rounded,
+                                            color: Colors.white,
+                                            size: 75,
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          const Icon(
+                                            Icons.group,
+                                            color: Colors.white,
+                                          ),
+                                          const SizedBox(
+                                            width: 20,
+                                          ),
+                                          TextWidget(
+                                            text: '1',
+                                            fontSize: 45,
+                                            color: Colors.white,
+                                            fontFamily: 'Bold',
+                                          ),
+                                        ],
+                                      ),
+                                      const Expanded(
+                                        child: SizedBox(
+                                          height: 20,
                                         ),
-                                        TextWidget(
-                                          text: '01-12-2023',
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        TextWidget(
-                                          text: 'yesterday at 2pm',
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: ButtonWidget(
+                                          radius: 100,
+                                          width: 75,
+                                          height: 30,
                                           fontSize: 12,
-                                          color: Colors.white,
+                                          label: 'View',
+                                          onPressed: () {
+                                            fname.text = data.docs[i]['fname'];
+                                            lname.text = data.docs[i]['lname'];
+                                            mname.text = data.docs[i]['mname'];
+                                            extension.text =
+                                                data.docs[i]['extension'];
+                                            extension.text =
+                                                data.docs[i]['extension'];
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: TextWidget(
+                                                    text: 'Details',
+                                                    fontSize: 18,
+                                                    fontFamily: 'Bold',
+                                                  ),
+                                                  content: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      TextFieldWidget(
+                                                          isEnabled: false,
+                                                          controller: fname,
+                                                          label: 'First Name'),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      TextFieldWidget(
+                                                          isEnabled: false,
+                                                          controller: lname,
+                                                          label: 'Last Name'),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      TextFieldWidget(
+                                                          isEnabled: false,
+                                                          controller: mname,
+                                                          label: 'Middle Name'),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      TextFieldWidget(
+                                                          isEnabled: false,
+                                                          controller: extension,
+                                                          label:
+                                                              'Extension (II, IV, Jr., Sr., etc)'),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Text(
+                                                        'Course: ${data.docs[i]['course']}',
+                                                        style: const TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Text(
+                                                        'Major:  ${data.docs[i]['major']}',
+                                                        style: const TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: TextWidget(
+                                                        text: 'Close',
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                        showDates();
+                                                      },
+                                                      child: TextWidget(
+                                                        text: 'Continue',
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                          color: Colors.blue,
+                                          textColor: Colors.white,
                                         ),
-                                      ],
-                                    ),
-                                    const Icon(
-                                      Icons.file_copy_rounded,
-                                      color: Colors.white,
-                                      size: 75,
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const Icon(
-                                      Icons.group,
-                                      color: Colors.white,
-                                    ),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    TextWidget(
-                                      text: '0',
-                                      fontSize: 45,
-                                      color: Colors.white,
-                                      fontFamily: 'Bold',
-                                    ),
-                                  ],
-                                ),
-                                const Expanded(
-                                  child: SizedBox(
-                                    height: 20,
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: ButtonWidget(
-                                    radius: 100,
-                                    width: 75,
-                                    height: 30,
-                                    fontSize: 12,
-                                    label: 'View',
-                                    onPressed: () {},
-                                    color: Colors.blue,
-                                    textColor: Colors.white,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+                      ],
+                    );
+                  }),
             ],
           ),
         ),

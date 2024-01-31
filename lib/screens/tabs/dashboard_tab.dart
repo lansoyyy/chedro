@@ -51,105 +51,175 @@ class DashboardTab extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 300,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextWidget(
-                              text: '1',
-                              fontSize: 32,
-                              fontFamily: 'Bold',
-                              color: Colors.black),
-                          const SizedBox(
-                            height: 10,
+                  StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('SO')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          print('error');
+                          return const Center(child: Text('Error'));
+                        }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 50),
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.black,
+                            )),
+                          );
+                        }
+
+                        final data = snapshot.requireData;
+                        return Container(
+                          width: 300,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.black),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          TextWidget(
-                              text: 'No. of Schools',
-                              fontSize: 14,
-                              fontFamily: 'Regular',
-                              color: Colors.black),
-                        ],
-                      ),
-                    ),
-                  ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextWidget(
+                                    text: data.docs.length.toString(),
+                                    fontSize: 32,
+                                    fontFamily: 'Bold',
+                                    color: Colors.black),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextWidget(
+                                    text: 'No. of Schools',
+                                    fontSize: 14,
+                                    fontFamily: 'Regular',
+                                    color: Colors.black),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
                   const SizedBox(
                     width: 20,
                   ),
-                  Container(
-                    width: 300,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextWidget(
-                              text: '1',
-                              fontSize: 32,
-                              fontFamily: 'Bold',
-                              color: Colors.black),
-                          const SizedBox(
-                            height: 10,
+                  StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('SO')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          print('error');
+                          return const Center(child: Text('Error'));
+                        }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 50),
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.black,
+                            )),
+                          );
+                        }
+
+                        final data = snapshot.requireData;
+                        return Container(
+                          width: 300,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.black),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          TextWidget(
-                              text: 'Total Applicants',
-                              fontSize: 14,
-                              fontFamily: 'Regular',
-                              color: Colors.black),
-                        ],
-                      ),
-                    ),
-                  ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextWidget(
+                                    text: data.docs.length.toString(),
+                                    fontSize: 32,
+                                    fontFamily: 'Bold',
+                                    color: Colors.black),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextWidget(
+                                    text: 'Total Applicants',
+                                    fontSize: 14,
+                                    fontFamily: 'Regular',
+                                    color: Colors.black),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
                   const SizedBox(
                     width: 20,
                   ),
-                  Container(
-                    width: 300,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextWidget(
-                              text: '1',
-                              fontSize: 32,
-                              fontFamily: 'Bold',
-                              color: Colors.black),
-                          const SizedBox(
-                            height: 10,
+                  StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('SO')
+                          .where('status', isEqualTo: 'Accepted')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          print('error');
+                          return const Center(child: Text('Error'));
+                        }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 50),
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.black,
+                            )),
+                          );
+                        }
+
+                        final data = snapshot.requireData;
+                        return Container(
+                          width: 300,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.black),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          TextWidget(
-                              text: 'Released S.O',
-                              fontSize: 14,
-                              fontFamily: 'Regular',
-                              color: Colors.black),
-                        ],
-                      ),
-                    ),
-                  ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextWidget(
+                                    text: data.docs.length.toString(),
+                                    fontSize: 32,
+                                    fontFamily: 'Bold',
+                                    color: Colors.black),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextWidget(
+                                    text: 'Released S.O',
+                                    fontSize: 14,
+                                    fontFamily: 'Regular',
+                                    color: Colors.black),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
                 ],
               ),
               const SizedBox(
