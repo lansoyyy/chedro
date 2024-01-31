@@ -1,8 +1,11 @@
+import 'package:chedro/services/add_so.dart';
 import 'package:chedro/widgets/button_widget.dart';
 import 'package:chedro/widgets/text_widget.dart';
 import 'package:chedro/widgets/textfield_widget.dart';
 import 'package:chedro/widgets/toast_widget.dart';
 import 'package:chedro/widgets/user_drawer_widget.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -894,11 +897,16 @@ class _UsersHomeScreenState extends State<UsersHomeScreen> {
     "Two-Year Aircraft Maintenance Technology",
     "Two-Year Aviation Electronics Technology"
   ];
+
+// Use this function with the picked file
+
+  List<Map<String, dynamic>> files = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
           addSODialog();
         },
         child: const Icon(
@@ -1780,66 +1788,108 @@ class _UsersHomeScreenState extends State<UsersHomeScreen> {
             fontSize: 18,
             fontFamily: 'Bold',
           ),
-          content: SizedBox(
-            width: 750,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Form 137 - (not necessary)',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8.0),
-                const Text('Accomplished Evaluation Sheet'),
-                const Text('CHED Approved Curriculum'),
-                const Text('For Program Specific:'),
-                const Text(
-                    '6. Summary of Related Learning Experiences (RLE) /'),
-                const Text(
-                    '   Cases Attended (for Nursing/Midwifery Programs only)'),
-                const Text(
-                    '   Certificate of Completion (for programs with On-the-Job-Training (OJT)) with specified number of OJT hours completed and description of work;'),
-                const Text(
-                    '8. Training Record Book / On-Board Training (OBT)/ Certificate (for Maritime Programs only)'),
-                const Text('For Graduate Program:'),
-                const Text(
-                    '9. Certificate of Comprehensive Exam Passed (Master\'s and Doctorate programs);'),
-                const Text(
-                    '10. Certificate of Oral Revalida Taken (Non-Thesis or Capstone Project)'),
-                const Text(
-                    '11. Digitized Copy of Thesis/Dissertation (for Graduate and Post-Graduate Programs)'),
-                const Text('Others'),
-                const Text(
-                    '12. For Transferee students only, Original Copy of Transcript of Records - this is part of the admission requirements'),
-                const Text(
-                    '12. Original Certificate of Live Birth issued by PSA - (not necessary)'),
-                const Text(
-                    '8. Marriage Contract, if married (PSA Original copy)'),
-                const Text(
-                    '9. For Foreign Students only, Notice of Acceptance / Admission (NOA) and Certificate of Eligibility of Admission (CEA)'),
-                const SizedBox(height: 10.0),
-                SizedBox(
-                  height: 55,
-                  child: ListView.builder(
-                    itemBuilder: (context, index) {
-                      return const ListTile(
-                        leading: Icon(
-                          Icons.file_copy,
-                        ),
-                      );
-                    },
+          content: StatefulBuilder(builder: (context, setState) {
+            return SizedBox(
+              width: 750,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Form 137 - (not necessary)',
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ),
-                const SizedBox(height: 10.0),
-                Center(
-                  child: ButtonWidget(
-                    label: 'Upload File',
-                    onPressed: () {},
+                  const SizedBox(height: 8.0),
+                  const Text('Accomplished Evaluation Sheet'),
+                  const Text('CHED Approved Curriculum'),
+                  const Text('For Program Specific:'),
+                  const Text(
+                      '6. Summary of Related Learning Experiences (RLE) /'),
+                  const Text(
+                      '   Cases Attended (for Nursing/Midwifery Programs only)'),
+                  const Text(
+                      '   Certificate of Completion (for programs with On-the-Job-Training (OJT)) with specified number of OJT hours completed and description of work;'),
+                  const Text(
+                      '8. Training Record Book / On-Board Training (OBT)/ Certificate (for Maritime Programs only)'),
+                  const Text('For Graduate Program:'),
+                  const Text(
+                      '9. Certificate of Comprehensive Exam Passed (Master\'s and Doctorate programs);'),
+                  const Text(
+                      '10. Certificate of Oral Revalida Taken (Non-Thesis or Capstone Project)'),
+                  const Text(
+                      '11. Digitized Copy of Thesis/Dissertation (for Graduate and Post-Graduate Programs)'),
+                  const Text('Others'),
+                  const Text(
+                      '12. For Transferee students only, Original Copy of Transcript of Records - this is part of the admission requirements'),
+                  const Text(
+                      '12. Original Certificate of Live Birth issued by PSA - (not necessary)'),
+                  const Text(
+                      '8. Marriage Contract, if married (PSA Original copy)'),
+                  const Text(
+                      '9. For Foreign Students only, Notice of Acceptance / Admission (NOA) and Certificate of Eligibility of Admission (CEA)'),
+                  const SizedBox(height: 10.0),
+                  SizedBox(
+                    height: 55,
+                    child: ListView.builder(
+                      itemCount: files.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          leading: const Icon(
+                            Icons.file_copy,
+                          ),
+                          title: TextWidget(
+                            text: files[index]['name'],
+                            fontSize: 18,
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                )
-              ],
-            ),
-          ),
+                  const SizedBox(height: 10.0),
+                  Center(
+                    child: ButtonWidget(
+                      label: 'Upload File',
+                      onPressed: () async {
+                        FilePickerResult? result =
+                            await FilePicker.platform.pickFiles();
+                        try {
+                          if (result != null) {
+                            PlatformFile pickedFile = result.files.single;
+                            String fileName = pickedFile.name;
+                            Reference firebaseStorageRef =
+                                FirebaseStorage.instance.ref().child(fileName);
+                            UploadTask uploadTask =
+                                firebaseStorageRef.putData(pickedFile.bytes!);
+
+                            TaskSnapshot taskSnapshot =
+                                await uploadTask.whenComplete(() => null);
+
+                            // Get the download URL of the uploaded file
+                            String downloadURL =
+                                await taskSnapshot.ref.getDownloadURL();
+
+                            setState(() {
+                              files.add({
+                                'name': fileName,
+                                'link': downloadURL,
+                              });
+                            });
+
+                            print(
+                                "File uploaded to Firebase Storage. Download URL: $downloadURL");
+                          } else {
+                            // Handle case where user canceled the picker
+                            print("User canceled the file picker");
+                          }
+                        } catch (e) {
+                          print("Error uploading file to Firebase Storage: $e");
+                        }
+                      },
+                    ),
+                  )
+                ],
+              ),
+            );
+          }),
           actions: [
             TextButton(
               onPressed: () {
@@ -1853,6 +1903,8 @@ class _UsersHomeScreenState extends State<UsersHomeScreen> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
+                addSO(fname.text, lname.text, mname.text, extension.text,
+                    course, major, grad.text, start.text, end.text, files);
                 showToast('SO submitted succesfully!');
               },
               child: TextWidget(

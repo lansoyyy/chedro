@@ -44,6 +44,10 @@ dependencies:
   firebase_auth_web: ^5.2.10
   get_storage:
   intl:
+  file_picker:
+  path_provider:
+  image_picker:
+  mime:
 
 dev_dependencies:
   flutter_test:
