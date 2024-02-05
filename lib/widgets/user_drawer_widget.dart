@@ -29,7 +29,7 @@ class _MyDrawerState extends State<UserDrawerWidget> {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const LetterheadTab()));
+                    builder: (context) => const UsersHomeScreen()));
               },
             ),
             ListTile(
@@ -39,7 +39,10 @@ class _MyDrawerState extends State<UserDrawerWidget> {
                 fontSize: 12,
                 color: Colors.black,
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const LetterheadTab()));
+              },
             ),
             ListTile(
               leading: const Icon(Icons.edit_document),

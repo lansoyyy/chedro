@@ -3,6 +3,7 @@ import 'package:chedro/widgets/button_widget.dart';
 import 'package:chedro/widgets/drawer_widget.dart';
 import 'package:chedro/widgets/textfield_widget.dart';
 import 'package:chedro/widgets/toast_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,10 @@ class _AddUserTabState extends State<AddUserTab> {
   String selected = 'Administrator';
   @override
   Widget build(BuildContext context) {
+    final Stream<DocumentSnapshot> userData = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .snapshots();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey[350],
@@ -39,21 +44,34 @@ class _AddUserTabState extends State<AddUserTab> {
           width: 50,
         ),
         actions: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextWidget(
-                text: 'John Doe',
-                fontSize: 14,
-                fontFamily: 'Bold',
-              ),
-              TextWidget(
-                text: 'Administrator',
-                fontSize: 12,
-              ),
-            ],
-          ),
+          StreamBuilder<DocumentSnapshot>(
+              stream: userData,
+              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: Text('Loading'));
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text('Something went wrong'));
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                dynamic data = snapshot.data;
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextWidget(
+                      text: data['fname'] + ' ' + data['lname'],
+                      fontSize: 14,
+                      fontFamily: 'Bold',
+                    ),
+                    TextWidget(
+                      text: data['role'],
+                      fontSize: 12,
+                    ),
+                  ],
+                );
+              }),
           IconButton(onPressed: () {}, icon: const Icon(Icons.account_circle))
         ],
       ),

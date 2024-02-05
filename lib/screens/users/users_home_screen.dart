@@ -906,6 +906,10 @@ class _UsersHomeScreenState extends State<UsersHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Stream<DocumentSnapshot> userData = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .snapshots();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -939,24 +943,35 @@ class _UsersHomeScreenState extends State<UsersHomeScreen> {
           ],
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.notifications_rounded,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-          const Icon(
-            Icons.account_circle,
-            color: Colors.white,
-            size: 25,
-          ),
-          const SizedBox(
-            width: 50,
-          )
+          StreamBuilder<DocumentSnapshot>(
+              stream: userData,
+              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: Text('Loading'));
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text('Something went wrong'));
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                dynamic data = snapshot.data;
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextWidget(
+                      text: data['fname'] + ' ' + data['lname'],
+                      fontSize: 14,
+                      fontFamily: 'Bold',
+                    ),
+                    TextWidget(
+                      text: data['role'],
+                      fontSize: 12,
+                    ),
+                  ],
+                );
+              }),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.account_circle))
         ],
       ),
       body: Padding(
