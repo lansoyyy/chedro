@@ -1,4 +1,5 @@
 import 'package:chedro/screens/auth/login_screen.dart';
+import 'package:chedro/screens/tabs/letter_head_tab.dart';
 import 'package:chedro/screens/users/users_home_screen.dart';
 import 'package:chedro/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class _MyDrawerState extends State<UserDrawerWidget> {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const UsersHomeScreen()));
+                    builder: (context) => const LetterheadTab()));
               },
             ),
             ListTile(
