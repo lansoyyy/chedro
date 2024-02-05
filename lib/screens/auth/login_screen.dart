@@ -3,6 +3,7 @@ import 'package:chedro/screens/users/users_home_screen.dart';
 import 'package:chedro/widgets/button_widget.dart';
 import 'package:chedro/widgets/text_widget.dart';
 import 'package:chedro/widgets/textfield_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -151,6 +152,20 @@ class _LoginScreenState extends State<LoginScreen> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
       showToast('Logged in succesfully!');
+
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .where('email', isEqualTo: emailController.text)
+          .get()
+          .then((value) {
+        if (value.docs.first['role'] == 'Administrator') {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const HomeScreen()));
+        } else {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const UsersHomeScreen()));
+        }
+      });
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const UsersHomeScreen()));
     } on FirebaseAuthException catch (e) {
